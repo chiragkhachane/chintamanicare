@@ -1,0 +1,104 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "../content/site";
+import { t, type Lang } from "../content/i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = t(lang);
+const ct = c.contact;
+---
+
+<section id="contact" class="section surface-mint contact">
+  <div class="container-x">
+    <header class="sec-head" data-reveal="up">
+      <p class="kicker"><span class="cross" aria-hidden="true"></span>{ct.kicker}</p>
+      <h2>{ct.heading}</h2>
+      <p class="sec-sub measure">{ct.sub}</p>
+    </header>
+
+    <div class="contact-grid">
+      <div class="info card" data-reveal="up">
+        <ul class="info-list">
+          <li class="info-row">
+            <span class="info-ic"><Icon name="ph:map-pin" class="h-5 w-5" /></span>
+            <div>
+              <span class="info-label">{ct.addressLabel}</span>
+              {ct.address.map((line) => <span class="info-val">{line}</span>)}
+              <span class="info-landmark"><Icon name="ph:flag-pennant" class="h-3.5 w-3.5" />{ct.landmark}</span>
+            </div>
+          </li>
+          <li class="info-row">
+            <span class="info-ic"><Icon name="ph:clock" class="h-5 w-5" /></span>
+            <div>
+              <span class="info-label">
+                {ct.hoursLabel}
+                <span class="open-badge sm" data-open-badge data-open={c.common.openNow} data-opens-today={c.common.opensToday} data-opens-day={c.common.opensDay} data-closed={c.common.closed}>
+                  <span class="live-dot" aria-hidden="true"></span>
+                  <span data-open-label>{c.common.openNow}</span>
+                </span>
+              </span>
+              {ct.hours.map((h) => (
+                <span class="info-val"><strong>{h.days}</strong> · {h.time}</span>
+              ))}
+            </div>
+          </li>
+          <li class="info-row">
+            <span class="info-ic"><Icon name="ph:phone-call" class="h-5 w-5" /></span>
+            <div>
+              <span class="info-label">{ct.phoneLabel}</span>
+              {site.contact.phones.map((p) => <a class="info-val link" href={`tel:${p.tel}`}>{p.label}</a>)}
+            </div>
+          </li>
+          <li class="info-row">
+            <span class="info-ic"><Icon name="ph:envelope-simple" class="h-5 w-5" /></span>
+            <div>
+              <span class="info-label">{ct.emailLabel}</span>
+              <a class="info-val link" href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+            </div>
+          </li>
+        </ul>
+        <a href={site.contact.mapLink} target="_blank" rel="noopener" class="btn btn-primary w-full">
+          <Icon name="ph:navigation-arrow" class="h-[1.1rem] w-[1.1rem]" />{c.common.directions}
+        </a>
+      </div>
+
+      <div class="map-wrap card" data-reveal="fade">
+        <iframe
+          title={c.contact.heading}
+          src={site.contact.mapEmbed}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sec-head { margin-bottom: 2.6rem; }
+  .sec-head .kicker { margin-bottom: 1rem; }
+  .sec-head h2 { font-size: clamp(1.9rem, 3.6vw, 2.9rem); }
+  .sec-sub { margin-top: 0.9rem; color: var(--muted); font-size: 1.06rem; }
+
+  .contact-grid { display: grid; gap: 1.4rem; }
+  @media (min-width: 900px) { .contact-grid { grid-template-columns: 0.92fr 1.08fr; } }
+
+  .info { padding: 1.6rem 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  .info-list { display: grid; gap: 1.3rem; }
+  .info-row { display: flex; gap: 0.9rem; }
+  .info-ic { display: grid; place-items: center; height: 42px; width: 42px; flex: none; border-radius: 12px; background: var(--mint); color: var(--brand-strong); }
+  .info-row > div { display: flex; flex-direction: column; gap: 0.15rem; }
+  .info-label { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.25rem; }
+  :is(html[lang="mr"], html[lang="hi"]) .info-label { text-transform: none; letter-spacing: 0; font-size: 0.92rem; }
+  .info-val { font-size: 0.98rem; color: var(--ink); }
+  .info-val.link:hover { color: var(--brand-strong); }
+  .info-landmark { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.3rem; font-size: 0.86rem; color: var(--brand-strong); font-weight: 600; }
+
+  .open-badge.sm { padding: 0.2rem 0.55rem; font-size: 0.72rem; border-radius: 9999px; background: var(--mint); border: 1px solid var(--line); color: var(--ink); display: inline-flex; align-items: center; gap: 0.35rem; text-transform: none; letter-spacing: 0; font-weight: 600; }
+  .open-badge.sm.is-closed .live-dot { background: var(--muted); }
+
+  .map-wrap { overflow: hidden; min-height: 340px; padding: 0; }
+  .map-wrap iframe { display: block; width: 100%; height: 100%; min-height: 340px; border: 0; filter: saturate(1.05); }
+</style>

@@ -1,0 +1,252 @@
+@import "tailwindcss";
+
+/* ============================================================
+   CHINTAMANI HOSPITAL & DENTAL CLINIC
+   Bespoke medical-blue system. Tailor-made, not stock.
+
+   COLOR — a custom blue built in OKLCH on a single anchored hue
+   (~252-260), sampled from the logo's swoosh + navy wordmark, so every
+   step is a sibling of the same blue, never a library default. Pure
+   white reading surface. The only secondary is a "vital" sky-blue
+   (same hue family, lifted lightness) used functionally: live "open
+   now" dots, active states, hover underlines, the pulse line. No gold,
+   no saffron, no decorative accent.
+
+   TYPE — "Trusted institution": Spectral (Latin display, warm serif)
+   + Tiro Devanagari (HI/MR display serif), Mukta for body across all
+   three scripts so EN / मराठी / हिंदी read as one brand.
+   ============================================================ */
+
+@theme {
+  /* Bricolage Grotesque carries the Latin display voice; Devanagari headings
+     fall through to Mukta (bold) by unicode-range, so /mr and /hi stay on brand. */
+  --font-display: "Bricolage Grotesque Variable", "Mukta", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Mukta", ui-sans-serif, system-ui, sans-serif;
+
+  /* Semantic colors resolve to runtime vars so a green band re-themes
+     its whole subtree by overriding the vars (see .band). */
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-mint: var(--mint);
+  --color-mint-2: var(--mint-2);
+  --color-fg: var(--fg);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-deep: var(--brand-deep);
+  --color-vital: var(--vital);
+  --color-on-brand: var(--on-brand);
+
+  --radius-card: 16px;
+  --radius-input: 12px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* Semantic z-scale */
+  --z-sticky: 40;
+  --z-nav: 50;
+  --z-overlay: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+}
+
+/* ---- White context (default). Palette sampled from the brand logo:
+       medical blue primary (the swoosh) + deep-navy ink (the "CHINTAMANI"
+       wordmark). Blues anchored to hue ~252-258. Same lightness/chroma/opacity
+       structure as before, hue re-anchored from green to blue. ---- */
+:root {
+  --canvas: #ffffff;
+  --surface: #ffffff;
+  --mint: oklch(0.975 0.014 250);   /* pale blue section wash */
+  --mint-2: oklch(0.958 0.022 250); /* card tint on white */
+  --ink: oklch(0.30 0.058 258);     /* headings: navy, echoes the wordmark (~10:1) */
+  --fg: oklch(0.40 0.035 256);      /* body, slate-navy (~7.5:1 on white) */
+  --muted: oklch(0.525 0.03 256);   /* secondary (~4.9:1 on white) */
+  --line: oklch(0.92 0.013 250);    /* hairline */
+  --line-strong: oklch(0.86 0.022 250);
+  --brand: oklch(0.55 0.135 252);   /* medical blue (the logo swoosh) */
+  --brand-strong: oklch(0.45 0.145 256);  /* links / text-weight blue (~5.6:1) */
+  --brand-deep: oklch(0.34 0.105 258);     /* band base */
+  --brand-deeper: oklch(0.26 0.085 260);   /* band gradient end */
+  --vital: oklch(0.80 0.13 238);    /* bright sky-blue highlight (functional accent) */
+  --navy: oklch(0.32 0.09 260);     /* deep navy, reserved for sparing use */
+  --on-brand: #ffffff;
+  --star: oklch(0.80 0.135 80);     /* warm amber, used ONLY on rating stars */
+  color-scheme: light;
+}
+
+/* Devanagari headings render in Mukta (bold) via the --font-display fallback. */
+
+/* ---- Committed green band: wrap a section to flip the palette ---- */
+.band {
+  position: relative;
+  background:
+    radial-gradient(120% 130% at 88% -10%, color-mix(in oklab, var(--brand) 38%, transparent), transparent 58%),
+    linear-gradient(168deg, var(--brand-deep), var(--brand-deeper));
+  --surface: color-mix(in oklab, #ffffff 7%, transparent);
+  --mint: color-mix(in oklab, #ffffff 9%, transparent);
+  --mint-2: color-mix(in oklab, #ffffff 12%, transparent);
+  --ink: #ffffff;
+  --fg: #ffffff;
+  --muted: oklch(0.9 0.04 160);
+  --line: color-mix(in oklab, #ffffff 16%, transparent);
+  --line-strong: color-mix(in oklab, #ffffff 30%, transparent);
+  --brand: var(--vital);
+  --brand-strong: var(--vital);
+  color: #ffffff;
+}
+
+/* A light, calm mint wash for alternating sections (stays light context). */
+.surface-mint { background-color: var(--mint); }
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+  body {
+    background-color: var(--canvas);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--brand); color: #ffffff; }
+  :focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 5px; }
+  .band :focus-visible { outline-color: #ffffff; }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  h3 { font-weight: 600; line-height: 1.14; letter-spacing: -0.02em; }
+  /* Devanagari (Mukta) reads better a touch looser than the grotesque. */
+  :is(html[lang="mr"], html[lang="hi"]) :is(h1, h2, h3) { font-weight: 700; letter-spacing: 0; }
+  h4, h5 { font-family: var(--font-sans); font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+  p { text-wrap: pretty; }
+  a { color: inherit; }
+  strong { font-weight: 700; color: var(--ink); }
+  /* Offset anchor jumps for the fixed nav (native + smooth-scroll fallback). */
+  :where(section[id], main[id]) { scroll-margin-top: 108px; }
+
+  /* Devanagari needs more vertical air (matras above/below the baseline). */
+  :is(html[lang="mr"], html[lang="hi"]) body { line-height: 1.8; }
+  :is(html[lang="mr"], html[lang="hi"]) h1,
+  :is(html[lang="mr"], html[lang="hi"]) h2 { line-height: 1.28; letter-spacing: 0; }
+  :is(html[lang="mr"], html[lang="hi"]) h3 { line-height: 1.4; letter-spacing: 0; }
+}
+
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-6xl px-5 sm:px-8; }
+  .section { padding-block: clamp(4rem, 8vw, 8rem); }
+  .measure { max-width: 64ch; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[0.95rem] font-semibold leading-none whitespace-nowrap transition-[transform,background-color,box-shadow,border-color,color] duration-300 will-change-transform;
+    font-family: var(--font-sans);
+  }
+  .btn-primary { background-color: var(--brand-strong); color: #fff; box-shadow: 0 1px 0 rgb(255 255 255 / 0.15) inset; }
+  .btn-primary:hover { background-color: var(--brand-deep); }
+  .btn-primary:active { transform: translateY(1px); }
+
+  /* On a green band: white fill, green label */
+  .btn-on-brand { background-color: #fff; color: var(--brand-deep); }
+  .btn-on-brand:hover { background-color: var(--vital); color: var(--brand-deeper); }
+  .btn-on-brand:active { transform: translateY(1px); }
+
+  /* WhatsApp: the way most Indian patients actually want to book */
+  .btn-whatsapp { background-color: #ffffff; color: var(--brand-deep); border: 1px solid var(--line); }
+  .band .btn-whatsapp { background: color-mix(in oklab, #ffffff 12%, transparent); color: #fff; border-color: var(--line); }
+  .btn-whatsapp:hover { border-color: var(--brand); color: var(--brand-strong); }
+  .band .btn-whatsapp:hover { background: color-mix(in oklab, #ffffff 20%, transparent); color: #fff; border-color: #fff; }
+
+  .btn-ghost { color: var(--fg); border: 1px solid var(--line-strong); background: transparent; }
+  .btn-ghost:hover { border-color: var(--brand); color: var(--brand-strong); }
+  .band .btn-ghost { color: #fff; }
+  .band .btn-ghost:hover { border-color: #fff; color: #fff; background: color-mix(in oklab, #ffffff 8%, transparent); }
+
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-medium;
+    color: var(--fg);
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  .card {
+    border-radius: var(--radius-card);
+    background-color: var(--surface);
+    border: 1px solid var(--line);
+  }
+
+  /* Reset to the white reading context inside a green .band (e.g. a form card). */
+  .surface-light {
+    --surface: #ffffff;
+    --mint: oklch(0.975 0.014 250);
+    --mint-2: oklch(0.958 0.022 250);
+    --ink: oklch(0.30 0.058 258);
+    --fg: oklch(0.40 0.035 256);
+    --muted: oklch(0.525 0.03 256);
+    --line: oklch(0.92 0.013 250);
+    --line-strong: oklch(0.86 0.022 250);
+    --brand: oklch(0.55 0.135 252);
+    --brand-strong: oklch(0.45 0.145 256);
+    color: var(--fg);
+    background-color: #ffffff;
+  }
+
+  /* Section opener: a small medical "+" mark + label. Used sparingly. */
+  .kicker {
+    @apply inline-flex items-center gap-2.5 text-[0.82rem] font-semibold uppercase;
+    letter-spacing: 0.08em;
+    color: var(--brand-strong);
+  }
+  .band .kicker { color: var(--vital); }
+  :is(html[lang="mr"], html[lang="hi"]) .kicker { text-transform: none; letter-spacing: 0.01em; font-size: 0.95rem; }
+  .kicker .cross { width: 14px; height: 14px; flex: none; color: var(--brand); }
+  .band .kicker .cross { color: var(--vital); }
+
+  /* The "+" cross device — a tailored, unmistakably medical brand mark. */
+  .cross {
+    display: inline-block;
+    background: currentColor;
+    -webkit-mask: var(--cross-mask) center / contain no-repeat;
+    mask: var(--cross-mask) center / contain no-repeat;
+  }
+
+  /* Live status dot (vital mint) for "Open now". */
+  .live-dot {
+    width: 9px; height: 9px; border-radius: 9999px;
+    background: var(--vital);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--vital) 20%, transparent);
+  }
+
+  /* Rating stars — the only warm note in the whole system.
+     inline-flex because Tailwind preflight sets svg{display:block}, which
+     would otherwise stack the star icons vertically. */
+  .stars { display: inline-flex; align-items: center; gap: 1px; color: var(--star); }
+
+  /* Interactive card lift (hover feedback). */
+  .lift { transition: transform 0.32s var(--ease-out-expo), box-shadow 0.32s var(--ease-out-expo), border-color 0.25s ease; will-change: transform; }
+  .lift:hover { transform: translateY(-5px); box-shadow: 0 28px 50px -34px rgb(16 30 64 / 0.5); border-color: color-mix(in oklab, var(--brand) 42%, var(--line)); }
+  .band .lift:hover { border-color: color-mix(in oklab, #fff 45%, transparent); }
+}
+
+/* Cross mask: a rounded medical "+". Set as a CSS var so .cross can use it. */
+:root {
+  --cross-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M9.6 2.4h4.8a1.2 1.2 0 0 1 1.2 1.2v4.8h4.8a1.2 1.2 0 0 1 1.2 1.2v4.8a1.2 1.2 0 0 1-1.2 1.2h-4.8v4.8a1.2 1.2 0 0 1-1.2 1.2H9.6a1.2 1.2 0 0 1-1.2-1.2v-4.8H3.6a1.2 1.2 0 0 1-1.2-1.2V9.6a1.2 1.2 0 0 1 1.2-1.2h4.8V3.6a1.2 1.2 0 0 1 1.2-1.2Z'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

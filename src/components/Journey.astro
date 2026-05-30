@@ -1,0 +1,98 @@
+---
+import { Icon } from "astro-icon/components";
+import { site, whatsappLink } from "../content/site";
+import { t, type Lang } from "../content/i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = t(lang);
+const phone = site.contact.phones[1];
+---
+
+<section id="journey" class="section surface-mint journey">
+  <div class="container-x journey-shell">
+    <header class="journey-head">
+      <p class="kicker"><span class="cross" aria-hidden="true"></span>{c.journeyIntro.kicker}</p>
+      <h2>{c.journeyIntro.heading}</h2>
+    </header>
+
+    <div class="journey-board">
+      <aside class="journey-brief">
+        <p>{c.journeyIntro.sub}</p>
+        <div class="journey-actions" aria-label={c.journeyIntro.kicker}>
+          <a href={`tel:${phone.tel}`} class="brief-link"><Icon name="ph:phone-call" class="h-4 w-4" />{c.common.call}</a>
+          <a href={whatsappLink()} target="_blank" rel="noopener" class="brief-link"><Icon name="ph:whatsapp-logo" class="h-4 w-4" />{c.common.whatsapp}</a>
+        </div>
+      </aside>
+
+      <ol class="route-list">
+        {c.journey.map((step, i) => (
+          <li class="route-step">
+            <div class="route-mark">
+              <span class="route-num">{String(i + 1).padStart(2, "0")}</span>
+              <span class="route-ic"><Icon name={step.icon} class="h-[1.1rem] w-[1.1rem]" /></span>
+            </div>
+            <div class="route-copy">
+              <h3 class="step-title">{step.title}</h3>
+              <p class="step-body">{step.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .journey { padding-block-start: clamp(7rem, 14vw, 8.5rem); }
+  .journey-shell { display: grid; gap: clamp(1.4rem, 4vw, 2.5rem); }
+  .journey-head { max-width: 48rem; }
+  .journey .kicker { margin-bottom: 0.9rem; text-transform: none; letter-spacing: 0.02em; font-size: 0.95rem; }
+  .journey-head h2 { font-size: clamp(2rem, 4vw, 3.1rem); }
+
+  .journey-board { display: grid; gap: 1rem; align-items: stretch; }
+  @media (min-width: 860px) { .journey-board { grid-template-columns: minmax(16rem, 0.36fr) minmax(0, 1fr); gap: 1.25rem; } }
+
+  .journey-brief {
+    display: flex; flex-direction: column; justify-content: space-between; gap: 1.4rem;
+    min-height: 100%; padding: clamp(1.1rem, 3vw, 1.45rem);
+    border-radius: 16px; background: var(--brand-deep); color: #fff;
+  }
+  .journey-brief p { font-family: var(--font-display); font-size: clamp(1.18rem, 2.4vw, 1.55rem); line-height: 1.32; color: #fff; }
+  :is(html[lang="mr"], html[lang="hi"]) .journey-brief p { font-family: var(--font-sans); font-weight: 700; line-height: 1.5; }
+  .journey-actions { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+  .brief-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    min-height: 2.45rem; padding: 0.58rem 0.82rem; border-radius: 9999px;
+    background: #fff; color: var(--brand-deep); font-size: 0.88rem; font-weight: 700;
+  }
+
+  .route-list {
+    display: grid; overflow: hidden;
+    border: 1px solid var(--line); border-radius: 16px; background: #fff;
+  }
+  .route-step {
+    display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: 0.85rem;
+    padding: clamp(1rem, 3vw, 1.25rem); border-top: 1px solid var(--line);
+  }
+  .route-step:first-child { border-top: 0; }
+  @media (min-width: 700px) { .route-list { grid-template-columns: 1fr 1fr; } .route-step:nth-child(2) { border-top: 0; } .route-step:nth-child(even) { border-left: 1px solid var(--line); } }
+  .route-mark { display: grid; align-content: start; justify-items: start; gap: 0.5rem; }
+  .route-num {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.85rem;
+    color: var(--brand-strong); line-height: 1;
+  }
+  .route-ic {
+    display: grid; place-items: center; width: 2.75rem; height: 2.75rem;
+    border-radius: 12px; background: var(--mint); color: var(--brand-strong); border: 1px solid var(--line);
+  }
+  .step-title { font-size: clamp(1.18rem, 2.2vw, 1.35rem); }
+  .step-body { margin-top: 0.4rem; color: var(--fg); font-size: 0.98rem; line-height: 1.65; max-width: 46rem; }
+
+  @media (max-width: 520px) {
+    .journey { padding-block: 13rem 3.6rem; }
+    .journey-head h2 { font-size: clamp(2rem, 10vw, 2.65rem); }
+    .route-step { grid-template-columns: 3.25rem minmax(0, 1fr); }
+    .route-ic { width: 2.45rem; height: 2.45rem; }
+  }
+</style>

@@ -1,0 +1,181 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import logo from "../assets/brand/logo.png";
+import { site } from "../content/site";
+import { t, LANGS, localePath, type Lang } from "../content/i18n";
+
+interface Props { lang: Lang; path?: string }
+const { lang, path = "/" } = Astro.props;
+const c = t(lang);
+const home = localePath(lang, "/");
+const phone = site.contact.phones[1];
+---
+
+<div data-nav-sentinel class="nav-sentinel" aria-hidden="true"></div>
+<header data-nav class="nav">
+  <div class="container-x flex h-[92px] items-center justify-between gap-4">
+    <a href={home} class="brand" aria-label={`${site.legalName}, ${c.common.home}`}>
+      <Image src={logo} alt={site.legalName} height={108} densities={[1, 2]} class="brand-logo" />
+    </a>
+
+    <nav aria-label="Primary" class="hidden items-center gap-7 lg:flex">
+      {c.nav.map((item) => (
+        <a href={localePath(lang, item.href)} class:list={["navlink", { active: !item.href.startsWith("#") && item.href === path }]}>{item.label}</a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Language switcher -->
+      <details class="lang" data-disclosure>
+        <summary aria-label={c.common.langName} class="lang-toggle">
+          <Icon name="ph:translate" class="h-[1.15rem] w-[1.15rem]" />
+          <span class="lang-current">{LANGS.find((l) => l.code === lang)?.native}</span>
+          <Icon name="ph:caret-down" class="caret h-3.5 w-3.5" />
+        </summary>
+        <ul class="lang-menu" role="menu">
+          {LANGS.map((l) => (
+            <li>
+              <a href={localePath(l.code, path)} role="menuitem" class:list={["lang-item", { active: l.code === lang }]}>
+                {l.native}
+                {l.code === lang && <Icon name="ph:check" class="h-4 w-4" />}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </details>
+
+      <a href={`tel:${phone.tel}`} class="nav-phone" aria-label={c.common.phoneAria}>
+        <span class="nav-phone-ic"><Icon name="ph:phone-call" class="h-[1.1rem] w-[1.1rem]" /></span>
+        <span class="hidden xl:inline">{phone.label}</span>
+      </a>
+
+      <a href={site.href.appointment} data-magnetic class="nav-cta">{c.common.book}</a>
+
+      <details class="mobile" data-disclosure>
+        <summary class="burger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </summary>
+        <div class="mobile-panel">
+          <nav aria-label="Mobile" class="mobile-links">
+            {c.nav.map((item) => <a href={localePath(lang, item.href)} class="mobile-link">{item.label}</a>)}
+          </nav>
+          <div class="mobile-actions">
+            <a href={`tel:${phone.tel}`} class="btn btn-ghost w-full"><Icon name="ph:phone-call" class="h-4 w-4" />{phone.label}</a>
+            <a href={site.href.appointment} class="btn btn-primary w-full">{c.common.book}</a>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .nav-sentinel { position: absolute; top: 98px; left: 0; width: 1px; height: 1px; pointer-events: none; }
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: var(--z-nav);
+    transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease;
+    border-bottom: 1px solid transparent;
+    color: var(--ink);
+  }
+  .nav.is-scrolled {
+    background: color-mix(in oklab, #ffffff 88%, transparent);
+    backdrop-filter: blur(14px) saturate(135%);
+    -webkit-backdrop-filter: blur(14px) saturate(135%);
+    border-bottom-color: var(--line);
+    box-shadow: 0 10px 34px -28px rgb(16 40 28 / 0.55);
+  }
+
+  .brand { display: inline-flex; align-items: center; }
+  .brand-logo { height: 56px; width: auto; }
+  @media (max-width: 480px) { .brand-logo { height: 46px; } }
+
+  .navlink {
+    font-size: 0.95rem; font-weight: 500; color: var(--fg);
+    position: relative; padding-block: 0.4rem;
+    transition: color 0.2s ease;
+  }
+  .navlink::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+    height: 2px; background: var(--brand);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s var(--ease-out-expo);
+  }
+  .navlink:hover { color: var(--brand-strong); }
+  .navlink:hover::after { transform: scaleX(1); }
+  .navlink.active { color: var(--brand-strong); font-weight: 600; }
+  .navlink.active::after { transform: scaleX(1); }
+
+  /* Disclosure (lang + mobile) */
+  details[data-disclosure] { position: relative; }
+  details[data-disclosure] > summary { list-style: none; cursor: pointer; }
+  details[data-disclosure] > summary::-webkit-details-marker { display: none; }
+
+  .lang-toggle {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.5rem 0.7rem; border-radius: 9999px;
+    border: 1px solid var(--line-strong); color: var(--fg);
+    font-size: 0.9rem; font-weight: 600;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .lang-toggle:hover { border-color: var(--brand); color: var(--brand-strong); }
+  .lang .caret { transition: transform 0.25s ease; opacity: 0.6; }
+  .lang[open] .caret { transform: rotate(180deg); }
+  .lang-menu {
+    position: absolute; right: 0; top: calc(100% + 0.5rem);
+    min-width: 160px; padding: 0.4rem;
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: 0 18px 44px -22px rgb(16 40 28 / 0.4);
+    z-index: var(--z-overlay);
+  }
+  .lang-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    padding: 0.55rem 0.7rem; border-radius: 9px;
+    font-size: 0.95rem; font-weight: 500; color: var(--fg);
+  }
+  .lang-item:hover { background: var(--mint); color: var(--brand-strong); }
+  .lang-item.active { color: var(--brand-strong); font-weight: 700; }
+
+  .nav-phone {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.92rem; font-weight: 600; color: var(--fg);
+  }
+  .nav-phone-ic {
+    display: grid; place-items: center; height: 36px; width: 36px;
+    border-radius: 9999px; background: var(--mint); color: var(--brand-strong);
+  }
+  .nav-phone:hover { color: var(--brand-strong); }
+
+  .nav-cta {
+    display: inline-flex; align-items: center; border-radius: 9999px;
+    padding: 0.62rem 1.15rem; font-size: 0.92rem; font-weight: 600;
+    background: var(--brand-strong); color: #fff; white-space: nowrap;
+    transition: background-color 0.25s ease, transform 0.25s ease; will-change: transform;
+  }
+  .nav-cta:hover { background: var(--brand-deep); }
+  @media (max-width: 1023px) { .nav-cta { display: none; } }
+
+  /* Burger / mobile */
+  .mobile { display: none; }
+  @media (max-width: 1023px) { .mobile { display: block; } }
+  .burger {
+    display: grid; gap: 5px; padding: 0.6rem; border-radius: 12px;
+    border: 1px solid var(--line-strong);
+  }
+  .burger span { display: block; width: 20px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform 0.3s ease, opacity 0.2s ease; }
+  .mobile[open] .burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .mobile[open] .burger span:nth-child(2) { opacity: 0; }
+  .mobile[open] .burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .mobile-panel {
+    position: fixed; left: 0; right: 0; top: 92px;
+    background: #fff; border-top: 1px solid var(--line);
+    box-shadow: 0 24px 40px -28px rgb(16 40 28 / 0.5);
+    padding: 1.1rem 1.25rem 1.5rem;
+    z-index: var(--z-overlay);
+  }
+  .mobile-links { display: grid; gap: 0.2rem; }
+  .mobile-link { padding: 0.85rem 0.4rem; font-size: 1.05rem; font-weight: 500; border-bottom: 1px solid var(--line); }
+  .mobile-actions { display: grid; gap: 0.6rem; margin-top: 1.1rem; }
+</style>

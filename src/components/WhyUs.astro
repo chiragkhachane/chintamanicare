@@ -1,0 +1,47 @@
+---
+import { Icon } from "astro-icon/components";
+import { t, type Lang } from "../content/i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = t(lang);
+---
+
+<section class="section band why" aria-labelledby="why-h">
+  <div class="container-x">
+    <header class="sec-head" data-reveal="up">
+      <p class="kicker"><span class="cross" aria-hidden="true"></span>{c.whyIntro.kicker}</p>
+      <h2 id="why-h">{c.whyIntro.heading}</h2>
+    </header>
+
+    <ul class="why-grid">
+      {c.why.map((item) => (
+        <li class="why-card lift" data-reveal="up">
+          <span class="why-ic"><Icon name={item.icon} class="h-[1.4rem] w-[1.4rem]" /></span>
+          <h3 class="why-title">{item.title}</h3>
+          <p class="why-body">{item.body}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sec-head { margin-bottom: 2.6rem; }
+  .sec-head .kicker { margin-bottom: 1rem; }
+  .sec-head h2 { font-size: clamp(1.9rem, 3.6vw, 2.9rem); color: #fff; max-width: 20ch; }
+
+  .why-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .why-card {
+    padding: 1.5rem 1.4rem 1.6rem; border-radius: var(--radius-card);
+    background: var(--surface); border: 1px solid var(--line);
+    backdrop-filter: blur(6px);
+  }
+  .why-ic {
+    display: grid; place-items: center; height: 48px; width: 48px;
+    border-radius: 13px; background: color-mix(in oklab, var(--vital) 22%, transparent);
+    color: var(--vital); margin-bottom: 1.05rem;
+  }
+  .why-title { font-size: 1.18rem; color: #fff; }
+  .why-body { margin-top: 0.55rem; color: var(--muted); font-size: 0.96rem; line-height: 1.6; }
+</style>

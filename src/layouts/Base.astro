@@ -1,0 +1,118 @@
+---
+// Fonts: Spectral (Latin display) + Tiro Devanagari (HI/MR display) + Mukta
+// (body, all three scripts). Subsets are demand-loaded by unicode-range, so an
+// English page never downloads Devanagari woff2 and vice versa.
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource/mukta/300.css";
+import "@fontsource/mukta/400.css";
+import "@fontsource/mukta/500.css";
+import "@fontsource/mukta/600.css";
+import "@fontsource/mukta/700.css";
+import "../styles/global.css";
+import { site } from "../content/site";
+import { t, localePath, type Lang } from "../content/i18n";
+
+interface Props {
+  lang?: Lang;
+  /** Locale-agnostic path of this page, e.g. "/" or "/doctors/tushar/". */
+  path?: string;
+}
+const { lang = "en", path = "/" } = Astro.props;
+const c = t(lang);
+
+const SITE = Astro.site ?? new URL("https://chintamanihospital.in");
+const pageTitle = c.meta.title;
+const pageDesc = c.meta.description;
+const canonical = new URL(Astro.url.pathname, SITE).href;
+
+const alternates = [
+  { hreflang: "en-IN", href: new URL(localePath("en", path), SITE).href },
+  { hreflang: "mr-IN", href: new URL(localePath("mr", path), SITE).href },
+  { hreflang: "hi-IN", href: new URL(localePath("hi", path), SITE).href },
+  { hreflang: "x-default", href: new URL(localePath("en", path), SITE).href },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": ["MedicalClinic", "Dentist"],
+  name: site.legalName,
+  description: c.meta.description,
+  url: canonical,
+  telephone: site.contact.phones[0].tel,
+  email: site.contact.email,
+  image: new URL("/og.svg", SITE).href,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Plot 619, Sector 18, Spine Road, Vitthal Nagar, Shivtej Nagar, Chikhali",
+    addressLocality: "Pimpri-Chinchwad, Pune",
+    addressRegion: "Maharashtra",
+    postalCode: "411019",
+    addressCountry: "IN",
+  },
+  geo: { "@type": "GeoCoordinates", latitude: 18.6648821, longitude: 73.8055101 },
+  hasMap: site.contact.mapLink,
+  aggregateRating: { "@type": "AggregateRating", ratingValue: "4.7", reviewCount: "19", bestRating: "5" },
+  openingHours: ["Mo-Sa 09:00-13:30", "Mo-Sa 17:00-20:30"],
+  medicalSpecialty: ["Surgical", "Dentistry"],
+  availableService: [
+    { "@type": "MedicalProcedure", name: "Laparoscopic surgery" },
+    { "@type": "MedicalProcedure", name: "GI endoscopy" },
+    { "@type": "MedicalProcedure", name: "Hernia repair" },
+    { "@type": "MedicalProcedure", name: "Dental care" },
+  ],
+};
+---
+
+<!doctype html>
+<html lang={c.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDesc} />
+    <link rel="canonical" href={canonical} />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <meta name="theme-color" content="#16356b" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDesc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:locale" content={c.ogLocale} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  </head>
+  <body>
+    <a href="#main" class="skip-link">{c.common.skip}</a>
+    <slot />
+
+    <script>
+      import { initMotion } from "../lib/motion";
+      initMotion();
+    </script>
+
+    <style is:global>
+      .skip-link {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%) translateY(-130%);
+        z-index: 100;
+        margin-top: 0.5rem;
+        padding: 0.6rem 1.1rem;
+        border-radius: 9999px;
+        background: var(--brand-strong);
+        color: #fff;
+        font-weight: 600;
+        transition: transform 0.2s ease;
+      }
+      .skip-link:focus { transform: translateX(-50%) translateY(0); }
+    </style>
+  </body>
+</html>

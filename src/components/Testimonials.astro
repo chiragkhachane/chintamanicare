@@ -1,0 +1,103 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "../content/site";
+import { t, type Lang } from "../content/i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = t(lang);
+const reviews = site.reviews;
+---
+
+<section class="section testimonials" aria-labelledby="tm-h">
+  <div class="tm-aurora" aria-hidden="true"></div>
+  <span class="tm-mark" aria-hidden="true">&ldquo;</span>
+  <div class="container-x">
+    <header class="tm-head" data-reveal="up">
+      <div>
+        <p class="kicker"><span class="cross" aria-hidden="true"></span>{c.testimonialsIntro.kicker}</p>
+        <h2 id="tm-h">{c.testimonialsIntro.heading}</h2>
+        <p class="sec-sub measure">{c.testimonialsIntro.sub}</p>
+      </div>
+      <a href={site.contact.reviewsUrl} target="_blank" rel="noopener" class="g-badge" aria-label={c.testimonialsCta.rated}>
+        <span class="g-mark" aria-hidden="true">G</span>
+        <span class="g-stack">
+          <span class="g-rate">{site.contact.rating.value} <span class="stars" aria-hidden="true">{[0,1,2,3,4].map(() => <Icon name="ph:star-fill" class="h-[0.8rem] w-[0.8rem]" />)}</span></span>
+          <span class="g-sub">{site.contact.rating.count}+ Google reviews</span>
+        </span>
+      </a>
+    </header>
+
+    <ul class="tm-grid">
+      {reviews.map((r) => (
+        <li class="tm card" data-reveal="up">
+          <div class="tm-inner">
+            <span class="stars" aria-hidden="true">
+              {[0, 1, 2, 3, 4].map(() => <Icon name="ph:star-fill" class="h-[0.95rem] w-[0.95rem]" />)}
+            </span>
+            <blockquote class="tm-quote">{r.quote}</blockquote>
+            <figcaption class="tm-by">
+              <img class="tm-avatar" src={r.photo} alt={r.name} width="44" height="44" loading="lazy" referrerpolicy="no-referrer" />
+              <span class="tm-meta">
+                <span class="tm-name">{r.name}</span>
+                <span class="tm-ctx"><Icon name="ph:google-logo" class="h-3 w-3" />{c.testimonialsCta.verified}</span>
+              </span>
+            </figcaption>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="tm-cta" data-reveal="fade">
+      <a href={site.contact.reviewsUrl} target="_blank" rel="noopener" class="btn btn-ghost">
+        <Icon name="ph:google-logo" class="h-[1.05rem] w-[1.05rem]" />{c.testimonialsCta.readMore}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonials { position: relative; overflow: hidden; }
+  .tm-aurora {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(42% 55% at 82% 18%, color-mix(in oklab, var(--brand) 11%, transparent), transparent 70%),
+      radial-gradient(38% 50% at 6% 88%, color-mix(in oklab, var(--vital) 14%, transparent), transparent 72%);
+  }
+  .tm-mark {
+    position: absolute; z-index: 0; top: -0.35em; right: 4%; pointer-events: none;
+    font-family: var(--font-display); font-weight: 700; line-height: 1;
+    font-size: clamp(10rem, 26vw, 24rem); color: color-mix(in oklab, var(--brand) 7%, transparent);
+  }
+  .testimonials .container-x { position: relative; z-index: 1; }
+
+  .tm-head { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-end; justify-content: space-between; margin-bottom: 2.4rem; }
+  .tm-head .kicker { margin-bottom: 1rem; }
+  .tm-head h2 { font-size: clamp(1.9rem, 3.6vw, 2.9rem); }
+  .sec-sub { margin-top: 0.7rem; color: var(--muted); font-size: 1.02rem; }
+
+  .g-badge { display: inline-flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1.05rem; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; }
+  .g-badge:hover { border-color: color-mix(in oklab, var(--brand) 40%, var(--line)); transform: translateY(-2px); box-shadow: 0 18px 34px -26px rgb(16 30 64 / 0.45); }
+  .g-mark { display: grid; place-items: center; height: 34px; width: 34px; border-radius: 9999px; background: var(--mint); color: var(--brand-strong); font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
+  .g-stack { display: flex; flex-direction: column; line-height: 1.2; }
+  .g-rate { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 700; color: var(--ink); }
+  .g-sub { font-size: 0.78rem; color: var(--muted); }
+
+  .tm-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); perspective: 1200px; }
+  .tm {
+    display: flex; flex-direction: column; padding: 1.6rem 1.5rem 1.5rem;
+    transform-style: preserve-3d; will-change: transform;
+    transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo), border-color 0.25s ease;
+  }
+  .tm:hover { box-shadow: 0 32px 56px -34px rgb(16 30 64 / 0.5); border-color: color-mix(in oklab, var(--brand) 35%, var(--line)); }
+  .tm-inner { display: flex; flex-direction: column; height: 100%; }
+  .tm-quote { margin-top: 0.9rem; font-family: var(--font-display); font-weight: 500; font-size: 1.14rem; line-height: 1.5; color: var(--ink); letter-spacing: -0.01em; }
+  :is(html[lang="mr"], html[lang="hi"]) .tm-quote { font-size: 1.04rem; line-height: 1.7; font-weight: 600; }
+  .tm-by { margin-top: auto; padding-top: 1.3rem; display: flex; align-items: center; gap: 0.7rem; }
+  .tm-avatar { height: 44px; width: 44px; flex: none; border-radius: 9999px; object-fit: cover; background: var(--mint); border: 1px solid var(--line); }
+  .tm-meta { display: flex; flex-direction: column; }
+  .tm-name { font-weight: 600; color: var(--ink); font-size: 0.98rem; }
+  .tm-ctx { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.82rem; color: var(--muted); }
+
+  .tm-cta { margin-top: 2rem; text-align: center; }
+</style>

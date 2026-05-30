@@ -1,0 +1,307 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import care from "../assets/feature/care.jpg";
+import { site } from "../content/site";
+import { t, type Lang } from "../content/i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = t(lang);
+const groupIcon: Record<string, string> = { surgical: "ph:first-aid", dental: "ph:tooth" };
+---
+
+<section id="services" class="section services">
+  <div class="svc-aurora" aria-hidden="true"></div>
+  <div class="container-x">
+    <div class="svc-feature">
+      <div class="svc-feature-copy">
+        <p class="kicker" data-reveal="fade"><span class="cross" aria-hidden="true"></span>{c.servicesIntro.kicker}</p>
+        <h2 class="svc-h" data-reveal="up">{c.servicesIntro.heading}</h2>
+        <p class="svc-sub measure" data-reveal="up">{c.servicesIntro.sub}</p>
+        <ul class="svc-minis" data-reveal="up">
+          <li><span class="m-k">2</span><span class="m-v">{c.stats[2].label}</span></li>
+          <li><span class="m-k">{site.contact.rating.value}<Icon name="ph:star-fill" class="h-[0.8rem] w-[0.8rem]" /></span><span class="m-v">{c.stats[1].label}</span></li>
+        </ul>
+      </div>
+
+      <div class="svc-feature-media" data-reveal="fade">
+        <div class="svc-media-accent" aria-hidden="true"></div>
+        <figure class="svc-media-frame">
+          <Image src={care} alt={c.servicesIntro.heading} widths={[480, 760, 1100]} sizes="(max-width: 1024px) 92vw, 540px" class="svc-media-img" />
+        </figure>
+        <div class="svc-float">
+          <span class="sf-ic"><Icon name="ph:shield-check" class="h-5 w-5" /></span>
+          <div>
+            <span class="sf-k">{c.doctors[0].experience}</span>
+            <span class="sf-v">{c.stats[0].label}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {c.services.map((group, groupIndex) => (
+      <section class:list={["svc-lens", `svc-lens--${group.key}`]} style={`--svc-count: ${group.items.length}; --svc-index: ${groupIndex};`} aria-labelledby={`services-${group.key}`}>
+        <div class="svc-lens-field" aria-hidden="true">
+          <span class="svc-lens-orbit"></span>
+          <span class="svc-lens-sweep"></span>
+        </div>
+        <div class="svc-group-head">
+          <div class="svc-mast-top">
+            <span class="svc-group-ic"><Icon name={groupIcon[group.key] ?? "ph:plus"} class="h-5 w-5" /></span>
+            <span class="svc-lens-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          </div>
+          <div class="svc-mast-copy">
+            <h3 id={`services-${group.key}`} class="svc-group-title">{group.label}</h3>
+            <p class="svc-group-blurb">{group.blurb}</p>
+          </div>
+          <div class="svc-mast-meter" aria-hidden="true">
+            {group.items.map((item, index) => (
+              <span style={`--i: ${index};`}><Icon name={item.icon} class="h-4 w-4" /></span>
+            ))}
+          </div>
+        </div>
+        <div class="svc-lens-body">
+          <div class="svc-lens-core" aria-hidden="true">
+            <Icon name={groupIcon[group.key] ?? "ph:plus"} class="h-8 w-8" />
+          </div>
+          <ul class="svc-grid">
+            {group.items.map((item, index) => (
+              <li class="svc" style={`--i: ${index};`}>
+                <span class="svc-ic"><Icon name={item.icon} class="h-[1.4rem] w-[1.4rem]" /></span>
+                <h4 class="svc-title">{item.title}</h4>
+                <p class="svc-body">{item.body}</p>
+              </li>
+            ))}
+          </ul>
+          <div class="svc-marquee" aria-hidden="true">
+            <div class="svc-marquee-track">
+              {[...group.items, ...group.items].map((item) => (
+                <span><Icon name={item.icon} class="h-4 w-4" />{item.title}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    ))}
+  </div>
+</section>
+
+<style>
+  .services { position: relative; overflow: hidden; }
+  .svc-aurora {
+    position: absolute; inset: -10% -10% auto -10%; height: 70%; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(40% 60% at 18% 20%, color-mix(in oklab, var(--brand) 12%, transparent), transparent 70%),
+      radial-gradient(38% 55% at 88% 8%, color-mix(in oklab, var(--vital) 16%, transparent), transparent 72%);
+    filter: blur(8px);
+  }
+  .services .container-x { position: relative; z-index: 1; }
+
+  /* Feature row */
+  .svc-feature { display: grid; gap: 2.5rem; align-items: center; margin-bottom: clamp(3rem, 6vw, 5rem); }
+  @media (min-width: 940px) { .svc-feature { grid-template-columns: 1fr 1.05fr; gap: 4rem; } }
+  .kicker { margin-bottom: 1rem; }
+  .svc-h { font-size: clamp(2rem, 4vw, 3.1rem); }
+  .svc-sub { margin-top: 1rem; color: var(--muted); font-size: 1.08rem; }
+  .svc-minis { margin-top: 1.8rem; display: flex; flex-wrap: wrap; gap: 2.2rem; }
+  .svc-minis .m-k { display: flex; align-items: center; gap: 0.2rem; font-family: var(--font-display); font-weight: 700; font-size: 2rem; color: var(--brand-strong); line-height: 1; }
+  .svc-minis .m-k svg { color: var(--star); }
+  .svc-minis .m-v { display: block; margin-top: 0.3rem; font-size: 0.86rem; color: var(--muted); max-width: 18ch; }
+
+  .svc-feature-media { position: relative; }
+  .svc-media-accent { position: absolute; inset: 1.4rem -1rem -1.4rem 1.6rem; z-index: 0; border-radius: 26px; background: linear-gradient(155deg, color-mix(in oklab, var(--brand) 22%, #fff), var(--mint)); border: 1px solid var(--line); }
+  .svc-media-frame { position: relative; z-index: 1; margin: 0; border-radius: 22px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 34px 64px -36px rgb(16 30 64 / 0.55); will-change: transform; }
+  .svc-media-img { display: block; width: 100%; aspect-ratio: 4 / 3.2; object-fit: cover; transform: scale(1.06); }
+  .svc-float {
+    position: absolute; z-index: 2; left: -0.9rem; bottom: 1.6rem;
+    display: inline-flex; align-items: center; gap: 0.7rem; padding: 0.8rem 1rem;
+    border-radius: 16px; background: color-mix(in oklab, #fff 78%, transparent);
+    backdrop-filter: blur(10px) saturate(140%); -webkit-backdrop-filter: blur(10px) saturate(140%);
+    border: 1px solid color-mix(in oklab, #fff 70%, var(--line)); box-shadow: 0 20px 40px -24px rgb(16 30 64 / 0.5);
+  }
+  .sf-ic { display: grid; place-items: center; height: 38px; width: 38px; border-radius: 11px; background: var(--brand-strong); color: #fff; }
+  .sf-k { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink); line-height: 1.1; }
+  .sf-v { display: block; font-size: 0.78rem; color: var(--muted); max-width: 16ch; }
+
+  .svc-lens {
+    --mx: 50%; --my: 38%; --tilt-x: 0deg; --tilt-y: 0deg;
+    position: relative; isolation: isolate; display: grid; gap: clamp(1.4rem, 3vw, 2.4rem);
+    margin-top: clamp(2.2rem, 5vw, 4.8rem); padding: clamp(1.1rem, 3vw, 2.4rem);
+    border-radius: 18px; overflow: hidden; perspective: 1200px; scroll-margin-top: 8.5rem;
+  }
+  .svc-lens::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0.9;
+    background: radial-gradient(circle at var(--mx) var(--my), color-mix(in oklab, var(--vital) 28%, transparent), transparent 31rem);
+    transition: background-position 0.2s linear;
+  }
+  .svc-lens-field { position: absolute; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
+  .svc-lens-orbit, .svc-lens-sweep { position: absolute; display: block; pointer-events: none; }
+  .svc-lens-orbit {
+    width: clamp(17rem, 34vw, 29rem); aspect-ratio: 1; border-radius: 50%;
+    border: 1px solid color-mix(in oklab, currentColor 22%, transparent);
+    mask-image: linear-gradient(135deg, transparent 10%, #000 42%, transparent 74%);
+  }
+  .svc-lens-sweep {
+    inset: 12% -18% auto -18%; height: 1px;
+    background: linear-gradient(90deg, transparent, currentColor, transparent);
+    opacity: 0.24; transform: rotate(-10deg);
+  }
+  .svc-lens--surgical {
+    color: #ffffff;
+    background:
+      radial-gradient(circle at 18% 88%, color-mix(in oklab, #ffffff 9%, transparent), transparent 17rem),
+      radial-gradient(70% 120% at 0% 0%, color-mix(in oklab, var(--brand) 38%, transparent), transparent 62%),
+      linear-gradient(148deg, var(--brand-deep), var(--brand-deeper));
+  }
+  .svc-lens--dental {
+    color: var(--brand-strong);
+    background:
+      radial-gradient(circle at 36% 44%, color-mix(in oklab, #ffffff 78%, transparent), transparent 16rem),
+      radial-gradient(58% 90% at 88% 5%, color-mix(in oklab, var(--vital) 22%, transparent), transparent 64%),
+      linear-gradient(145deg, #ffffff, var(--mint));
+  }
+  .svc-lens--surgical .svc-lens-orbit { right: -5rem; top: -9rem; }
+  .svc-lens--surgical .svc-lens-sweep { color: #ffffff; }
+  .svc-lens--dental .svc-lens-orbit { left: -6rem; bottom: -12rem; }
+  .svc-lens--dental .svc-lens-sweep { color: var(--brand-strong); top: auto; bottom: 18%; transform: rotate(8deg); }
+
+  @media (min-width: 920px) {
+    .svc-lens { grid-template-columns: minmax(14rem, 0.34fr) minmax(0, 1fr); align-items: stretch; }
+    .svc-lens--dental { grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.34fr); }
+    .svc-lens--dental .svc-group-head { order: 2; }
+    .svc-lens--dental .svc-lens-body { order: 1; }
+  }
+
+  .svc-group-head { display: grid; align-content: start; gap: clamp(1.2rem, 3vw, 2.2rem); min-width: 0; }
+  @media (max-width: 919px) { .svc-group-head { grid-template-columns: auto 1fr; align-items: start; } .svc-mast-meter { grid-column: 1 / -1; } }
+  @media (min-width: 920px) { .svc-group-head { min-height: 100%; grid-template-rows: auto auto 1fr; } }
+  .svc-mast-top { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+  .svc-group-ic { display: grid; place-items: center; height: 52px; width: 52px; flex: none; border-radius: 14px; background: var(--brand-strong); color: #fff; }
+  .svc-lens--surgical .svc-group-ic { background: #ffffff; color: var(--brand-deep); }
+  .svc-lens-mark { display: inline-grid; grid-template-columns: repeat(3, 0.6rem); gap: 0.28rem; align-items: center; height: 2.2rem; padding-inline: 0.65rem; border-radius: 999px; background: color-mix(in oklab, currentColor 9%, transparent); }
+  .svc-lens-mark span { display: block; width: 0.45rem; height: 0.45rem; border-radius: 999px; background: currentColor; opacity: 0.44; }
+  .svc-lens-mark span:nth-child(2) { opacity: 0.78; transform: scale(1.28); }
+  .svc-lens--surgical .svc-lens-mark { color: #ffffff; }
+  .svc-mast-copy { align-self: start; }
+  .svc-group-title { font-size: clamp(1.6rem, 3vw, 2.35rem); }
+  .svc-lens--surgical .svc-group-title { color: #ffffff; }
+  .svc-group-blurb { margin-top: 0.55rem; color: var(--muted); font-size: 1rem; max-width: 28rem; }
+  .svc-lens--surgical .svc-group-blurb { color: oklch(0.9 0.035 250); }
+  .svc-mast-meter { display: flex; flex-wrap: wrap; align-self: end; gap: 0.45rem; padding-top: 0.2rem; }
+  .svc-mast-meter span { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 999px; color: currentColor; background: color-mix(in oklab, currentColor 10%, transparent); border: 1px solid color-mix(in oklab, currentColor 16%, transparent); }
+  .svc-lens--surgical .svc-mast-meter span { color: #ffffff; }
+  .svc-lens-body { position: relative; min-width: 0; align-self: center; }
+  .svc-lens-core {
+    position: absolute; z-index: 0; inset: 50% auto auto 50%; width: clamp(8rem, 18vw, 14rem); aspect-ratio: 1;
+    display: grid; place-items: center; border-radius: 50%; color: currentColor;
+    border: 1px solid color-mix(in oklab, currentColor 14%, transparent);
+    background: radial-gradient(circle, color-mix(in oklab, currentColor 9%, transparent), transparent 62%);
+    opacity: 0.5; translate: -50% -50%; pointer-events: none;
+  }
+  .svc-lens-core::before, .svc-lens-core::after { content: ""; position: absolute; border-radius: 50%; border: 1px solid color-mix(in oklab, currentColor 16%, transparent); }
+  .svc-lens-core::before { inset: 16%; }
+  .svc-lens-core::after { inset: 31%; }
+  .svc-lens-core svg { opacity: 0.54; }
+  .svc-lens--surgical .svc-lens-core { color: #ffffff; left: 48%; top: 54%; }
+  .svc-lens--dental .svc-lens-core { color: var(--brand-strong); left: 51%; top: 48%; opacity: 0.42; }
+  .svc-grid { display: grid; gap: 0.85rem; transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); transform-style: preserve-3d; transition: transform 0.5s var(--ease-out-expo); }
+  .svc-lens--surgical .svc-grid { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .svc-lens--dental .svc-grid { grid-template-columns: repeat(auto-fit, minmax(216px, 1fr)); }
+  @media (min-width: 1040px) {
+    .svc-lens--surgical .svc-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .svc-lens--surgical .svc { grid-column: span 2; }
+    .svc-lens--surgical .svc:nth-child(1), .svc-lens--surgical .svc:nth-child(6) { grid-column: span 3; }
+    .svc-lens--dental .svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 1rem; }
+    .svc-lens--dental .svc:nth-child(1), .svc-lens--dental .svc:nth-child(4) { transform: translateY(0.9rem); }
+    .svc-lens--dental .svc:nth-child(2), .svc-lens--dental .svc:nth-child(3) { transform: translateY(-0.65rem); }
+  }
+  .svc {
+    position: relative; min-height: 12.5rem; padding: 1.15rem; border-radius: 16px; overflow: hidden;
+    border: 1px solid color-mix(in oklab, var(--brand-strong) 16%, transparent);
+    background: color-mix(in oklab, #ffffff 82%, var(--mint));
+    transition: border-color 0.25s ease, transform 0.34s var(--ease-out-expo), background-color 0.25s ease;
+  }
+  .svc-lens--dental .svc { background: linear-gradient(180deg, color-mix(in oklab, #ffffff 92%, var(--mint)), color-mix(in oklab, var(--mint) 74%, #ffffff)); box-shadow: 0 1px 0 color-mix(in oklab, #ffffff 80%, transparent) inset; }
+  .svc::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(135deg, color-mix(in oklab, var(--brand) 12%, transparent), transparent 38%);
+    opacity: 0; transition: opacity 0.28s ease;
+  }
+  .svc > * { position: relative; z-index: 1; }
+  .svc-lens--surgical .svc {
+    border-color: color-mix(in oklab, #ffffff 20%, transparent);
+    background: color-mix(in oklab, #ffffff 11%, transparent);
+  }
+  .svc-lens--surgical .svc:nth-child(1)::after, .svc-lens--surgical .svc:nth-child(6)::after {
+    content: ""; position: absolute; inset: auto 1.15rem 1.15rem auto; width: 4.7rem; height: 4.7rem; border-radius: 50%;
+    border: 1px solid color-mix(in oklab, #ffffff 20%, transparent); opacity: 0.5;
+  }
+  .svc-lens--dental .svc:nth-child(2)::after {
+    content: ""; position: absolute; inset: auto 1rem 1rem auto; width: 4.6rem; height: 1.45rem; border-radius: 999px 999px 45% 45%;
+    border: 1px solid color-mix(in oklab, var(--brand) 25%, transparent); border-top-width: 3px; opacity: 0.52;
+  }
+  .svc:hover { border-color: color-mix(in oklab, var(--brand) 45%, var(--line)); transform: translateY(-6px) translateZ(20px); }
+  @media (min-width: 1040px) {
+    .svc-lens--dental .svc:hover { transform: translateY(-7px) translateZ(20px); }
+  }
+  .svc:hover::before { opacity: 1; }
+  .svc-lens--surgical .svc:hover { border-color: color-mix(in oklab, #ffffff 42%, transparent); }
+  .svc-ic { display: grid; place-items: center; height: 48px; width: 48px; border-radius: 14px; background: color-mix(in oklab, var(--brand) 8%, #ffffff); color: var(--brand-strong); margin-bottom: clamp(1rem, 2vw, 1.8rem); transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s var(--ease-out-expo); }
+  .svc-lens--surgical .svc-ic { background: color-mix(in oklab, #ffffff 16%, transparent); color: #ffffff; }
+  .svc:hover .svc-ic { background: var(--brand-strong); color: #fff; transform: scale(1.07) rotate(-4deg); }
+  .svc-lens--surgical .svc:hover .svc-ic { background: #ffffff; color: var(--brand-deep); }
+  .svc-title { font-size: clamp(1.05rem, 1.7vw, 1.2rem); }
+  .svc-lens--surgical .svc-title { color: #ffffff; }
+  .svc-body { margin-top: 0.55rem; color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+  .svc-lens--surgical .svc-body { color: oklch(0.9 0.035 250); }
+
+  .svc-marquee { margin-top: 1rem; overflow: hidden; border-block: 1px solid color-mix(in oklab, currentColor 16%, transparent); }
+  .svc-marquee-track { display: flex; flex-wrap: wrap; width: auto; gap: 0.65rem; padding-block: 0.72rem; }
+  .svc-marquee span { display: inline-flex; align-items: center; gap: 0.38rem; padding: 0.42rem 0.72rem; border-radius: 999px; color: currentColor; background: color-mix(in oklab, currentColor 8%, transparent); font-size: 0.84rem; font-weight: 700; white-space: nowrap; }
+  .svc-lens--surgical .svc-marquee span { color: #ffffff; }
+
+  @media (max-width: 820px) {
+    .svc-lens { gap: 1.15rem; margin-top: 2rem; padding: 1rem; border-radius: 18px; }
+    .svc-group-head { grid-template-columns: auto 1fr; gap: 0.85rem 0.95rem; align-items: center; }
+    .svc-mast-top { grid-column: 1; }
+    .svc-mast-copy { grid-column: 2; }
+    .svc-group-ic { height: 48px; width: 48px; border-radius: 14px; }
+    .svc-lens-mark, .svc-mast-meter { display: none; }
+    .svc-group-title { font-size: clamp(1.45rem, 8vw, 2rem); }
+    .svc-group-blurb { margin-top: 0.35rem; font-size: 0.98rem; line-height: 1.52; }
+    .svc-lens-field, .svc-lens-core, .svc-marquee { display: none; }
+    .svc-grid { grid-template-columns: 1fr; gap: 0.75rem; transform: none; }
+    .svc {
+      min-height: auto;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.15rem 0.9rem;
+      align-items: start;
+      padding: 1rem;
+      transform: none;
+    }
+    .svc-ic { grid-row: 1 / span 2; margin-bottom: 0; }
+    .svc-title { align-self: end; }
+    .svc-body { margin-top: 0.18rem; }
+  }
+
+  @media (max-width: 720px) {
+    .svc-lens { border-radius: 16px; padding: 1rem; }
+    .svc-grid { transform: none; }
+    .svc-lens-core { display: none; }
+    .svc-lens--dental .svc:nth-child(1), .svc-lens--dental .svc:nth-child(2), .svc-lens--dental .svc:nth-child(3), .svc-lens--dental .svc:nth-child(4) { transform: none; }
+    .svc-media-accent { inset: 1rem 0.2rem -0.8rem 0.6rem; }
+    .svc-float {
+      position: static;
+      margin-top: 0.85rem;
+      width: fit-content;
+      max-width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .svc-lens::before, .svc-grid, .svc, .svc-ic { transition: none; }
+    .svc-grid, .svc:hover { transform: none; }
+  }
+</style>

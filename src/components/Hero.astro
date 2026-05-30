@@ -1,0 +1,175 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import drTushar from "../assets/doctors/dr-tushar-khachane.png";
+import drBabita from "../assets/doctors/dr-babita-khachane.png";
+import { site, whatsappLink } from "../content/site";
+import { t, type Lang } from "../content/i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = t(lang);
+const phone = site.contact.phones[1];
+const [tushar, babita] = c.doctors;
+const photos = { tushar: drTushar, babita: drBabita };
+---
+
+<section id="top" class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="container-x hero-grid">
+    <div class="hero-copy">
+      <p class="kicker" data-reveal="fade">
+        <Icon name="ph:map-pin" class="h-[1.05rem] w-[1.05rem]" />
+        {c.hero.place}
+      </p>
+
+      <h1 class="hero-title">
+        <span class="line" data-reveal="up">{c.hero.line1}</span>
+        <span class="line accent" data-reveal="up">{c.hero.line2}</span>
+      </h1>
+
+      <p class="hero-sub measure" data-reveal="up">{c.hero.sub}</p>
+
+      <div class="hero-cta" data-reveal="up">
+        <a href={site.href.appointment} data-magnetic class="btn btn-primary">
+          <Icon name="ph:calendar-plus" class="h-[1.15rem] w-[1.15rem]" />
+          {c.common.book}
+        </a>
+        <a href={`tel:${phone.tel}`} class="btn btn-ghost">
+          <Icon name="ph:phone-call" class="h-[1.15rem] w-[1.15rem]" />
+          {c.common.call}
+        </a>
+        <a href={whatsappLink()} target="_blank" rel="noopener" class="btn btn-whatsapp">
+          <Icon name="ph:whatsapp-logo" class="h-[1.15rem] w-[1.15rem]" />
+          {c.common.whatsapp}
+        </a>
+      </div>
+
+      <div class="hero-trust" data-reveal="fade">
+        <span class="stars" aria-hidden="true">
+          {[0, 1, 2, 3, 4].map(() => <Icon name="ph:star-fill" class="h-[0.95rem] w-[0.95rem]" />)}
+        </span>
+        <span class="hero-rating">{c.hero.rating}</span>
+      </div>
+    </div>
+
+    <div class="hero-media" data-reveal="fade">
+      <div class="hero-media-shell">
+      <div class="duo">
+        <figure class="frame frame-a" data-reveal="up">
+          <span class="frame-badge"><Icon name="ph:medal" class="h-3.5 w-3.5" />{tushar.experience}</span>
+          <Image src={photos.tushar} alt={tushar.name} widths={[360, 520, 720]} sizes="(max-width: 1024px) 45vw, 280px" class="photo" />
+          <figcaption class="name-tag">
+            <span class="nm">{tushar.name}</span>
+            <span class="role">{tushar.role}</span>
+          </figcaption>
+        </figure>
+        <figure class="frame frame-b" data-reveal="up">
+          <span class="frame-badge"><Icon name="ph:medal" class="h-3.5 w-3.5" />{babita.experience}</span>
+          <Image src={photos.babita} alt={babita.name} widths={[360, 520, 720]} sizes="(max-width: 1024px) 45vw, 280px" class="photo" />
+          <figcaption class="name-tag">
+            <span class="nm">{babita.name}</span>
+            <span class="role">{babita.role}</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="hero-media-foot">
+        <div class="open-badge" data-open-badge data-open={c.common.openNow} data-opens-today={c.common.opensToday} data-opens-day={c.common.opensDay} data-closed={c.common.closed}>
+          <span class="live-dot" aria-hidden="true"></span>
+          <span data-open-label>{c.common.openNow}</span>
+        </div>
+        <p class="hero-led">{c.hero.established}</p>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; overflow: hidden; padding-top: 92px; }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(58% 58% at 84% 6%, color-mix(in oklab, var(--brand) 13%, transparent), transparent 70%),
+      radial-gradient(48% 42% at -2% 100%, var(--mint), transparent 76%);
+  }
+  .hero-grid {
+    position: relative; z-index: 1;
+    display: grid; gap: 2.5rem; align-items: center;
+    padding-block: clamp(2rem, 4vw, 3.5rem) clamp(3rem, 6vw, 5rem);
+    min-height: min(90vh, 900px);
+  }
+  @media (min-width: 1024px) { .hero-grid { grid-template-columns: 1.02fr 0.98fr; gap: 3.5rem; } }
+
+  .kicker { margin-bottom: 1.4rem; }
+  .hero-title {
+    font-size: clamp(2.5rem, 5.4vw, 4.4rem);
+    font-weight: 500; line-height: 1.04; letter-spacing: -0.02em; color: var(--ink);
+  }
+  .hero-title .line { display: block; }
+  .hero-title .accent { color: var(--brand-strong); }
+  :is(html[lang="mr"], html[lang="hi"]) .hero-title { line-height: 1.22; font-size: clamp(2rem, 4.6vw, 3.6rem); }
+
+  .hero-sub { margin-top: 1.5rem; font-size: 1.12rem; color: var(--muted); line-height: 1.65; }
+  .hero-cta { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+  .hero-trust { margin-top: 1.9rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.55rem; font-size: 0.92rem; color: var(--muted); }
+  .hero-rating { color: var(--ink); font-weight: 600; }
+  @media (max-width: 520px) { .hero-trust { gap: 0.35rem 0.55rem; } }
+
+  /* Media: both doctors, equal proof */
+  .hero-media { position: relative; }
+  .hero-media-shell {
+    position: relative;
+    padding: 1rem;
+    border-radius: 28px;
+    background: linear-gradient(155deg, color-mix(in oklab, var(--brand) 16%, #fff), var(--mint));
+    border: 1px solid var(--line);
+    box-shadow: 0 34px 64px -42px rgb(16 30 64 / 0.32);
+  }
+  .duo { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; align-items: stretch; }
+  .frame { position: relative; margin: 0; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 50px -32px rgb(16 30 64 / 0.5); background: var(--mint-2); }
+  .photo { display: block; width: 100%; height: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: top center; }
+  .frame-badge {
+    position: absolute; top: 0.8rem; left: 0.8rem; z-index: 2;
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.35rem 0.65rem; border-radius: 9999px;
+    background: color-mix(in oklab, #fff 92%, transparent);
+    border: 1px solid var(--line); color: var(--brand-strong);
+    font-size: 0.78rem; font-weight: 700;
+  }
+  .name-tag {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    display: flex; flex-direction: column; gap: 0.1rem;
+    padding: 1.8rem 0.85rem 0.75rem;
+    background: linear-gradient(to top, rgb(8 22 52 / 0.85), transparent);
+    color: #fff;
+  }
+  .name-tag .nm { font-family: var(--font-display); font-size: 0.92rem; font-weight: 600; line-height: 1.2; }
+  .name-tag .role { font-size: 0.72rem; line-height: 1.35; color: color-mix(in oklab, #fff 84%, transparent); }
+
+  .hero-media-foot {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 0.8rem 1rem; margin-top: 0.95rem;
+  }
+  .hero-led { color: var(--ink); font-size: 0.92rem; font-weight: 600; max-width: 24rem; }
+
+  .open-badge {
+    position: static;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 0.85rem; border-radius: 9999px;
+    background: #fff; border: 1px solid var(--line);
+    box-shadow: 0 14px 30px -22px rgb(16 30 64 / 0.28);
+    font-size: 0.82rem; font-weight: 600; color: var(--ink);
+  }
+  .open-badge.is-closed .live-dot { background: var(--muted); }
+
+  @media (max-width: 1023px) { .hero-media { max-width: 500px; margin-inline: auto; } }
+  @media (max-width: 520px) {
+    .hero-media-shell { padding: 0.85rem; border-radius: 22px; }
+    .duo { gap: 0.75rem; }
+    .hero-media-foot { align-items: flex-start; }
+  }
+  @media (max-width: 380px) { .name-tag .nm { font-size: 0.82rem; } }
+</style>

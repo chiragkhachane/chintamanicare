@@ -1,0 +1,53 @@
+---
+import { Icon } from "astro-icon/components";
+import { t, type Lang } from "../content/i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = t(lang);
+const row = c.trust;
+---
+
+<section class="trust-strip" aria-label="Credentials">
+  <svg class="pulse" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 20 H470 l14 -15 l16 30 l14 -22 l12 14 H1200" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+  <div class="marquee">
+    <ul class="track">
+      {row.map((item, i) => (
+        <li class="trust-item">
+          <Icon name="ph:seal-check" class="h-4 w-4 ic" />
+          <span set:html={item} />
+          {i < row.length - 1 && <span class="sep" aria-hidden="true"></span>}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .trust-strip {
+    position: relative; background: var(--mint);
+    border-block: 1px solid var(--line);
+    padding-block: 1.05rem;
+    overflow: hidden;
+  }
+  .pulse {
+    position: absolute; left: 0; right: 0; top: 0; height: 100%; width: 100%;
+    color: color-mix(in oklab, var(--brand) 16%, transparent);
+    opacity: 0.5; pointer-events: none;
+  }
+  .marquee {
+    position: relative;
+  }
+  .track {
+    display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0; width: auto;
+  }
+  .trust-item {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    padding-inline: 1.4rem;
+    font-size: 0.92rem; font-weight: 600; color: var(--fg); white-space: nowrap;
+  }
+  .trust-item .ic { color: var(--brand); flex: none; }
+  .sep { width: 5px; height: 5px; border-radius: 9999px; background: var(--line-strong); margin-left: 1.4rem; }
+</style>

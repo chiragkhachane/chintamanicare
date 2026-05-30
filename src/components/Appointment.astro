@@ -1,0 +1,171 @@
+---
+import { Icon } from "astro-icon/components";
+import { site, whatsappLink } from "../content/site";
+import { t, type Lang } from "../content/i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = t(lang);
+const a = c.appointment;
+const key = site.appointment.web3formsKey;
+const hasKey = Boolean(key);
+const introSub = hasKey ? a.sub : a.demoNote;
+const phone = site.contact.phones[1];
+const waMsg = lang === "mr"
+  ? "नमस्कार, मला अपॉइंटमेंट बुक करायची आहे."
+  : lang === "hi"
+  ? "नमस्ते, मुझे अपॉइंटमेंट बुक करनी है."
+  : "Hello, I would like to book an appointment.";
+---
+
+<section id="appointment" class="section band appointment">
+  <div class="container-x appt-grid">
+    <div class="appt-intro">
+      <p class="kicker"><span class="cross" aria-hidden="true"></span>{a.kicker}</p>
+      <h2 class="appt-h">{a.heading}</h2>
+      <p class="appt-sub measure">{introSub}</p>
+
+      <div class="appt-or">
+        <span class="appt-or-label">{a.orCall}</span>
+        <div class="appt-or-actions">
+          <a href={`tel:${phone.tel}`} class="btn btn-on-brand"><Icon name="ph:phone-call" class="h-[1.1rem] w-[1.1rem]" />{phone.label}</a>
+          <a href={whatsappLink(waMsg)} target="_blank" rel="noopener" class="btn btn-whatsapp"><Icon name="ph:whatsapp-logo" class="h-[1.1rem] w-[1.1rem]" />{c.common.whatsapp}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="appt-card card surface-light" data-reveal="up">
+      {hasKey ? (
+      <form class="appt-form" data-appt-form data-haskey="1" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value={key} />
+        <input type="hidden" name="subject" value="New appointment request | Chintamani Hospital" />
+        <input type="hidden" name="from_name" value="Chintamani Hospital website" />
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        <div class="field">
+          <label for="ap-name">{a.fields.name}</label>
+          <input id="ap-name" name="name" type="text" required placeholder={a.fields.namePh} autocomplete="name" />
+        </div>
+        <div class="field">
+          <label for="ap-phone">{a.fields.phone}</label>
+          <input id="ap-phone" name="phone" type="tel" required inputmode="tel" pattern="[0-9+ ]{8,15}" placeholder={a.fields.phonePh} autocomplete="tel" />
+        </div>
+        <div class="field">
+          <label for="ap-service">{a.fields.service}</label>
+          <div class="select-wrap">
+            <select id="ap-service" name="service" required>
+              <option value="" disabled selected>{a.fields.servicePh}</option>
+              {a.services.map((s) => <option value={s}>{s}</option>)}
+            </select>
+            <Icon name="ph:caret-down" class="select-caret h-4 w-4" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="ap-msg">{a.fields.message}</label>
+          <textarea id="ap-msg" name="message" rows="3" placeholder={a.fields.messagePh}></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full appt-submit">
+          <Icon name="ph:paper-plane-tilt" class="h-[1.1rem] w-[1.1rem]" />
+          <span class="submit-label" data-sending={a.fields.sending}>{a.fields.submit}</span>
+        </button>
+        <p class="appt-privacy"><Icon name="ph:lock-simple" class="h-3.5 w-3.5" />{a.privacy}</p>
+      </form>
+      ) : (
+      <div class="appt-fallback">
+        <span class="appt-fallback-ic"><Icon name="ph:phone-call" class="h-7 w-7" /></span>
+        <h3>{a.fallback.title}</h3>
+        <p class="appt-fallback-body">{a.fallback.body}</p>
+        <div class="appt-fallback-actions">
+          <a href={`tel:${phone.tel}`} class="btn btn-primary w-full"><Icon name="ph:phone-call" class="h-[1.1rem] w-[1.1rem]" />{phone.label}</a>
+          <a href={whatsappLink(waMsg)} target="_blank" rel="noopener" class="btn btn-whatsapp w-full"><Icon name="ph:whatsapp-logo" class="h-[1.1rem] w-[1.1rem]" />{c.common.whatsapp}</a>
+        </div>
+        <p class="appt-privacy"><Icon name="ph:lock-simple" class="h-3.5 w-3.5" />{a.fallback.note}</p>
+      </div>
+      )}
+
+      <div class="appt-success" data-appt-success hidden>
+        <span class="success-ic"><Icon name="ph:check-circle-fill" class="h-9 w-9" /></span>
+        <h3>{a.success.title}</h3>
+        <p>{a.success.body}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .appt-grid { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 940px) { .appt-grid { grid-template-columns: 1fr 1fr; gap: 3.5rem; } }
+
+  .kicker { margin-bottom: 1rem; }
+  .appt-h { font-size: clamp(1.9rem, 3.6vw, 2.9rem); color: #fff; }
+  .appt-sub { margin-top: 0.9rem; color: var(--muted); font-size: 1.06rem; }
+
+  .appt-or { margin-top: 2rem; padding-top: 1.6rem; border-top: 1px solid var(--line); }
+  .appt-or-label { display: block; font-size: 0.9rem; color: var(--muted); margin-bottom: 0.8rem; font-weight: 500; }
+  .appt-or-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+
+  .appt-card { padding: clamp(1.4rem, 3vw, 2rem); }
+  .appt-form { display: grid; gap: 1.05rem; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .field { display: grid; gap: 0.4rem; }
+  .field label { font-size: 0.88rem; font-weight: 600; color: var(--ink); }
+  .field input, .field textarea, .select-wrap select {
+    width: 100%; font: inherit; color: var(--ink);
+    background: var(--mint); border: 1px solid var(--line); border-radius: var(--radius-input);
+    padding: 0.75rem 0.9rem; transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .field input::placeholder, .field textarea::placeholder { color: var(--muted); }
+  .field input:focus, .field textarea:focus, .select-wrap select:focus {
+    outline: none; border-color: var(--brand); background: #fff;
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 18%, transparent);
+  }
+  .select-wrap { position: relative; }
+  .select-wrap select { appearance: none; -webkit-appearance: none; cursor: pointer; }
+  .select-caret { position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+  .appt-submit { margin-top: 0.3rem; }
+  .appt-demo { font-size: 0.82rem; color: var(--brand-strong); background: var(--mint); border: 1px dashed color-mix(in oklab, var(--brand) 40%, var(--line)); border-radius: 10px; padding: 0.6rem 0.75rem; }
+  .appt-privacy { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--muted); }
+
+  .appt-fallback { display: grid; gap: 1rem; text-align: left; }
+  .appt-fallback-ic {
+    display: grid; place-items: center; height: 58px; width: 58px;
+    border-radius: 18px; background: var(--mint); color: var(--brand-strong);
+  }
+  .appt-fallback h3 { font-size: 1.5rem; }
+  .appt-fallback-body { color: var(--fg); font-size: 1.02rem; line-height: 1.65; }
+  .appt-fallback-actions { display: grid; gap: 0.65rem; }
+  .appt-fallback .btn-whatsapp { background: var(--mint); color: var(--brand-strong); border-color: var(--line); }
+  .appt-fallback .btn-whatsapp:hover { background: color-mix(in oklab, var(--mint) 84%, #fff); color: var(--brand-deep); border-color: var(--brand); }
+
+  .appt-success { text-align: center; padding: 2rem 1rem; }
+  .success-ic { color: var(--brand); }
+  .appt-success h3 { margin-top: 0.8rem; font-size: 1.5rem; }
+  .appt-success p { margin-top: 0.6rem; color: var(--muted); }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-appt-form]");
+  if (form) {
+    const success = document.querySelector<HTMLElement>("[data-appt-success]");
+    const btn = form.querySelector<HTMLButtonElement>(".appt-submit");
+    const label = form.querySelector<HTMLElement>(".submit-label");
+    const sending = label?.dataset.sending;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (btn) { btn.disabled = true; if (label && sending) label.textContent = sending; }
+      try {
+        const res = await fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } });
+        if (res.ok) {
+          form.hidden = true;
+          if (success) success.hidden = false;
+        } else {
+          if (btn) btn.disabled = false;
+        }
+      } catch {
+        if (btn) btn.disabled = false;
+      }
+    });
+  }
+</script>

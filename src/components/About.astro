@@ -1,0 +1,69 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import clinic from "../assets/clinic/dental-clinic.png";
+import { t, type Lang } from "../content/i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = t(lang);
+---
+
+<section id="about" class="section about">
+  <div class="container-x about-grid">
+    <div class="about-media" data-reveal="fade">
+      <figure class="about-frame">
+        <Image src={clinic} alt={c.about.heading} widths={[420, 640, 820]} sizes="(max-width: 900px) 90vw, 460px" class="about-img" />
+      </figure>
+      <div class="about-badge">
+        <span class="cross" aria-hidden="true"></span>
+        <span>{c.about.kicker}</span>
+      </div>
+    </div>
+
+    <div class="about-copy">
+      <p class="kicker" data-reveal="fade"><span class="cross" aria-hidden="true"></span>{c.about.kicker}</p>
+      <h2 class="about-h" data-reveal="up">{c.about.heading}</h2>
+      {c.about.body.map((para) => <p class="about-p measure" data-reveal="up">{para}</p>)}
+      <blockquote class="about-quote" data-reveal="up">
+        <Icon name="ph:quotes-fill" class="q-mark" />
+        <p>{c.about.quote}</p>
+        <cite>{c.about.quoteBy}</cite>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 900px) { .about-grid { grid-template-columns: 0.9fr 1.1fr; gap: 4rem; } }
+
+  .about-media { position: relative; }
+  .about-frame {
+    margin: 0; border-radius: 22px; overflow: hidden;
+    border: 1px solid var(--line); box-shadow: 0 30px 60px -38px rgb(16 40 28 / 0.45);
+  }
+  .about-img { display: block; width: 100%; aspect-ratio: 4 / 4.4; object-fit: cover; }
+  .about-badge {
+    position: absolute; bottom: -1rem; right: -0.6rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.7rem 1rem; border-radius: 14px;
+    background: #fff; border: 1px solid var(--line);
+    box-shadow: 0 16px 34px -22px rgb(16 40 28 / 0.4);
+    font-size: 0.9rem; font-weight: 600; color: var(--ink);
+  }
+  .about-badge .cross { width: 16px; height: 16px; color: var(--brand); }
+  @media (max-width: 899px) { .about-media { max-width: 420px; } }
+
+  .kicker { margin-bottom: 1.1rem; }
+  .about-h { font-size: clamp(1.85rem, 3.4vw, 2.75rem); max-width: 18ch; }
+  .about-p { margin-top: 1.2rem; color: var(--fg); font-size: 1.06rem; }
+  .about-quote {
+    margin-top: 2rem; position: relative;
+    padding: 1.4rem 1.5rem 1.4rem 1.6rem;
+    background: var(--mint); border-radius: 16px;
+  }
+  .about-quote .q-mark { position: absolute; top: 1rem; left: 1.1rem; height: 1.5rem; width: 1.5rem; color: color-mix(in oklab, var(--brand) 40%, transparent); }
+  .about-quote p { font-family: var(--font-display); font-weight: 500; font-size: 1.25rem; color: var(--ink); line-height: 1.45; padding-left: 2.2rem; letter-spacing: -0.01em; }
+  .about-quote cite { display: block; margin-top: 0.7rem; padding-left: 2.2rem; font-style: normal; font-size: 0.9rem; font-weight: 600; color: var(--brand-strong); }
+</style>
