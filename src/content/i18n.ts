@@ -68,6 +68,8 @@ export interface Copy {
   footer: { tagline: string; exploreHeading: string; reachHeading: string; links: NavLink[]; rights: string };
 }
 
+const BASE_PATH = import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL.replace(/\/$/, "");
+
 /* ============================== ENGLISH ============================== */
 const en: Copy = {
   htmlLang: "en-IN",
@@ -640,6 +642,6 @@ export function t(lang: Lang): Copy {
  */
 export function localePath(lang: Lang, path: string): string {
   if (path.startsWith("#") || path.startsWith("http") || path.startsWith("tel:") || path.startsWith("mailto:")) return path;
-  if (lang === "en") return path;
-  return path === "/" ? `/${lang}/` : `/${lang}${path}`;
+  const localized = lang === "en" ? path : path === "/" ? `/${lang}/` : `/${lang}${path}`;
+  return `${BASE_PATH}${localized}`;
 }

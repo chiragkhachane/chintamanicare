@@ -1,61 +1,60 @@
-# Chintamani Hospital — website
+# Chintamani Hospital & Dental Clinic
 
-A premium, single-page marketing site for Chintamani Hospital (Chinchwad, Pune),
-led by Dr. Tushar Khachane (surgery) and Dr. Babita Khachane (dental).
+Professional, trilingual Astro site for Chintamani Hospital & Dental Clinic in
+Chikhali, Pimpri-Chinchwad. The site presents surgical care, GI endoscopy, and
+dental care led by Dr. Tushar Khachane and Dr. Babita Khachane.
 
-Built with **Astro + Tailwind v4 + GSAP (ScrollTrigger / SplitText) + Lenis**, with a
-WebGL hero particle field (Three.js). Designed to the `taste-skill` ruleset:
-one locked teal accent, sans-first type (Bricolage Grotesque + Geist), motivated
-motion only, and a mandatory `prefers-reduced-motion` fallback throughout.
+The build is intentionally calm and static: no scroll reveals, marquees,
+parallax, tilt effects, or decorative animation loops. The interface prioritizes
+phone-first trust, readable doctor proof, direct booking, and Marathi/Hindi/English
+localization.
 
 ## Commands
 
 ```bash
-npm install      # install dependencies
-npm run dev      # local dev server at http://localhost:4321
-npm run build    # production build to ./dist
-npm run preview  # preview the production build
+npm install          # install dependencies
+npm run dev          # local dev server at http://localhost:4321
+npm run build        # production build to ./dist
+npm run build:github-pages  # build for GitHub Pages project URL
+npm run preview      # preview the production build
 ```
 
 ## Editing content
 
-All copy lives in one file: **`src/content/site.ts`**. Change text, doctors,
-services, stats, testimonials, and contact details there.
+Translatable copy lives in **`src/content/i18n.ts`**.
+Language-neutral facts, contact details, schedules, ratings, and form config live
+in **`src/content/site.ts`**.
+
+Local generated design references can live in **`design-inspiration/`**, which is
+ignored by Git. Production image assets live under **`src/assets/`**.
 
 ## What the client still needs to provide
 
-Search across `src/content/site.ts` for `DRAFT` and replace each one:
-
-- **Dr. Babita Khachane**: exact name spelling, qualifications (BDS / MDS and
-  specialisation), focus areas, and years of experience.
-- **Dental services**: the real treatment menu.
-- **Photography**: real, consented clinic and doctor photos (currently picsum
-  placeholders; doctor cards show branded initials, not stock faces).
-- **Testimonials**: real, consented patient quotes (replace the samples).
-- **Logo**: drop a real logo if one exists (currently a generated monogram in
-  `src/icons/logo.svg` and `public/favicon.svg`).
-- **Stats**: confirm or extend the numbers in `site.stats`.
-- **Social profiles**: add verified links to `site.social`.
+Search across `src/content/site.ts` for `TODO(client)` before launch and confirm
+schedule, ratings, and any remaining client-owned facts.
 
 ## Appointment form
 
-The form (`src/components/Appointment.astro`) runs in **safe demo mode** until you
-add a free [Web3Forms](https://web3forms.com) access key to
-`site.appointment.web3formsKey` in `src/content/site.ts`. Once set, submissions are
-emailed to the address configured in your Web3Forms account.
+The appointment section uses phone and WhatsApp as the primary fallback while no
+Web3Forms key is configured. Add a Web3Forms access key to
+`site.appointment.web3formsKey` in `src/content/site.ts` to enable form
+submissions.
 
 ## Deploy
 
-Static output. Deploy `npm run build` output to Vercel or Netlify (both auto-detect
-Astro). Set the production domain in `astro.config.mjs` (`site:`) for correct
-canonical URLs and sitemap, and export a 1200x630 PNG version of `public/og.svg`
-for richer social-share previews.
+The repository deploys to GitHub Pages via GitHub Actions from `develop`.
 
-## Accessibility & motion
+- Repository: `chiragkhachane/chintamanicare`
+- Pages URL: `https://chiragkhachane.github.io/chintamanicare/`
+- Workflow: `.github/workflows/deploy-pages.yml`
 
-- Honors `prefers-reduced-motion`: parallax, scroll reveals, the marquee, and the
-  3D field all collapse to static.
-- The WebGL field only loads on capable desktops (skips on mobile, low-core
-  devices, save-data, and reduced-motion). A CSS aurora is the always-on fallback.
-- Light and dark themes, with a toggle in the header and `prefers-color-scheme`
-  as the default.
+The workflow sets `GITHUB_PAGES=true`, which switches Astro to the GitHub Pages
+project base path. Normal local/production builds keep `https://chintamanihospital.in`
+as the canonical site URL.
+
+## Accessibility
+
+- Semantic headings and localized page metadata across English, Marathi, and Hindi.
+- Keyboard-visible focus states.
+- Direct phone, WhatsApp, directions, and review links.
+- No decorative animation layer, so content is visible immediately.
