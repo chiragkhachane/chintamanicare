@@ -18,10 +18,10 @@ export const site = {
   contact: {
     phones: [
       { label: "020 6529 0882", tel: "+912065290882" },
-      { label: "098817 26634", tel: "+919881726634" },
+      { label: "74478 44036", tel: "+917447844036" },
     ],
     // WhatsApp is how most patients here actually prefer to reach a clinic.
-    whatsapp: { number: "919881726634", display: "098817 26634" },
+    whatsapp: { number: "917447844036", display: "74478 44036" },
     email: "tusharkhachane@yahoo.com",
     // Real Google Business pin (lat/lng from the place URL). Keyless embed.
     coords: { lat: 18.6648821, lng: 73.8055101 },
